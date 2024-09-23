@@ -1,20 +1,24 @@
-import os
-from flask import Flask, render_template, request, jsonify
-from dotenv import load_dotenv
-import openai
+from flask import Flask, render_template, jsonify
 import random
 
-load_dotenv()
-
 app = Flask(__name__)
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
 jokes = [
     "Why don't scientists trust atoms? Because they make up everything!",
     "What do you call a fake noodle? An impasta!",
     "Why did the math book look so sad? Because it had too many problems.",
     "What do you call a bear with no teeth? A gummy bear!",
-    "Why did the cookie go to the doctor? Because it was feeling crumbly!"
+    "Why did the cookie go to the doctor? Because it was feeling crumbly!",
+    "What do you call a sleeping bull? A bulldozer!",
+    "Why did the picture go to jail? Because it was framed!",
+    "What do you call a boomerang that doesn't come back? A stick!",
+    "Why did the scarecrow win an award? He was outstanding in his field!",
+    "What do you call a parade of rabbits hopping backwards? A receding hare-line!",
+    "Why couldn't the pirate play cards? Because he was sitting on the deck!",
+    "What kind of tree fits in your hand? A palm tree!",
+    "Why did the golfer bring two pairs of pants? In case he got a hole in one!",
+    "How do you make a tissue dance? Put a little boogie in it!",
+    "Why was six afraid of seven? Because seven eight nine!"
 ]
 
 @app.route('/')
@@ -25,18 +29,5 @@ def index():
 def get_joke():
     return jsonify({'joke': random.choice(jokes)})
 
-@app.route('/explain_joke', methods=['POST'])
-def explain_joke():
-    joke = request.json['joke']
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant that explains jokes to children."},
-            {"role": "user", "content": f"Explain this joke to a child: {joke}"}
-        ]
-    )
-    explanation = response.choices[0].message['content']
-    return jsonify({'explanation': explanation})
-
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=10000)
