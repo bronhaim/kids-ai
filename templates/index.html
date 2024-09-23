@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funny Jokes for Kids</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+        body { font-family: 'Fredoka One', cursive; }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 min-h-screen flex items-center justify-center">
+<div class="bg-white p-8 rounded-3xl shadow-2xl max-w-2xl w-full mx-4">
+    <h1 class="text-4xl mb-6 text-center text-purple-600">Funny Jokes for Kids! 😆</h1>
+    <div class="space-y-4">
+        <button id="jokeBtn" class="w-full bg-yellow-400 hover:bg-yellow-500 text-purple-700 font-bold py-3 px-4 rounded-full transition duration-300 transform hover:scale-105">
+            Tell me a joke! 🎭
+        </button>
+        <p id="joke" class="text-2xl text-center min-h-[100px] flex items-center justify-center"></p>
+        <button id="explainBtn" class="w-full bg-green-400 hover:bg-green-500 text-white font-bold py-3 px-4 rounded-full transition duration-300 transform hover:scale-105 hidden">
+            Explain the joke 🤔
+        </button>
+        <p id="explanation" class="text-lg text-center text-gray-700 italic min-h-[100px]"></p>
+    </div>
+</div>
+
+<script>
+    const jokeBtn = document.getElementById('jokeBtn');
+    const explainBtn = document.getElementById('explainBtn');
+    const jokeElement = document.getElementById('joke');
+    const explanationElement = document.getElementById('explanation');
+
+    jokeBtn.addEventListener('click', async () => {
+        const response = await fetch('/get_joke');
+        const data = await response.json();
+        jokeElement.textContent = data.joke;
+        explainBtn.classList.remove('hidden');
+        explanationElement.textContent = '';
+    });
+
+    explainBtn.addEventListener('click', async () => {
+        const joke = jokeElement.textContent;
+        explainBtn.textContent = 'Thinking... 🧠';
+        const response = await fetch('/explain_joke', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ joke }),
+        });
+        const data = await response.json();
+        explanationElement.textContent = data.explanation;
+        explainBtn.textContent = 'Explain the joke 🤔';
+    });
+</script>
+</body>
+</html>
